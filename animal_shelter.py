@@ -4,20 +4,18 @@ from bson.objectid import ObjectId
 #CRUD operaters for animal collection in mongoDB
 class AnimalShelter:
 
-    #initialize connection to MongoDB - change variables
     def __init__(self, username, password):
-        USER = username
-        PASS = password
+        HOST = os.getenv("MONGO_HOST")
+        PORT = int(os.getenv("MONGO_PORT", "27017"))
+        DB = os.getenv("MONGO_DB")
+        COL = os.getenv("MONGO_COLLECTION")
 
-        HOST = 'nv-desktop-services.apporto.com'
-        PORT = 31846
-        DB = 'AAC'
-        COL = 'animals'
+        self.client = MongoClient(
+            'mongodb://%s:%s@%s:%d' % (username, password, HOST, PORT)
+        )
 
-        #Connection to Database
-        self.client = MongoClient('mongodb://%s:%s@%s:%d' % (USER,PASS,HOST,PORT))
-        self.database = self.client['%s' % (DB)]
-        self.collection = self.database['%s' % (COL)]
+        self.database = self.client[DB]
+        self.collection = self.database[COL]
 #---------------------------------------------------------------------------------------------
     #Insert document into MongoDB collection if data is valid
     def create(self, data):
